@@ -1,27 +1,32 @@
 class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-        int x = 0;
-        int y = 0;
-        int dx = 1;
-        int dy = 0;
-        List<Integer> res = new ArrayList<>();
-
-        for (int i = 0; i < rows * cols; i++) {
-            res.add(matrix[y][x]);
-            matrix[y][x] = -101; // the range of numbers in matrix is from -100 to 100
-
-            if (!(0 <= x + dx && x + dx < cols && 0 <= y + dy && y + dy < rows) || matrix[y+dy][x+dx] == -101) {
-                int temp = dx;
-                dx = -dy;
-                dy = temp;
+        List<Integer> ls = new ArrayList<>();
+        int top = 0;
+        int left = 0;
+        int right = matrix[0].length -1;
+        int bottom = matrix.length -1;
+        while(top<=bottom && left <= right){
+            for(int i =left; i<=right;i++){
+                ls.add(matrix[top][i]);
             }
-
-            x += dx;
-            y += dy;
+            top++;
+            for(int i = top; i<=bottom;i++){
+                ls.add(matrix[i][right]);
+            }
+            right--;
+            if(top<=bottom){
+                for(int i = right; i>=left;i--){
+                    ls.add(matrix[bottom][i]);
+                }
+                bottom--;
+            }
+            if(left<=right){
+                for(int i = bottom; i>=top; i--){
+                    ls.add(matrix[i][left]);
+                }
+                left++;
+            }
         }
-
-        return res;        
+        return ls;
     }
 }
