@@ -1,32 +1,33 @@
 class Solution {
     public boolean exist(char[][] board, String word) {
-        for(int i =0; i<board.length;i++){
-            for(int j = 0;j<board[0].length; j++){
-                boolean ans = search( board, i, j, word, 0);
-                if(ans == true){
+        for(int i =0 ;i<board.length;i++){
+            for(int j = 0;j<board[0].length;j++){
+                boolean check = findNext(board, word, 0, i, j);
+                if(check){
                     return true;
                 }
             }
         }
         return false;
+        
     }
-    public static boolean search(char[][] board, int cr, int cc, String word, int idx){
-        if(idx == word.length()){
+    public boolean findNext(char[][] board, String word, int ch, int x, int y){
+        if(ch == word.length()){
             return true;
         }
-        if(cc<0 || cr<0 || cc>=board[0].length || cr>=board.length || word.charAt(idx) != board[cr][cc]){
+        if(x<0 || y<0 || x>=board.length || y>=board[0].length || word.charAt(ch) != board[x][y] || board[x][y] == '*'){
             return false;
         }
-        board[cr][cc] = '*';
-        int[] r = {-1,0,1,0};
-        int[] c= {0,-1,0,1};
-        for(int k = 0;k<c.length;k++){
-            boolean ans = search(board, cr+r[k], cc+c[k], word, idx+1);
-            if(ans == true){
-                return true;
-            }
+        
+        char temp = board[x][y];
+        board[x][y] = '*';
+        if (findNext(board, word, ch+1, x, y+1) ||
+        findNext(board, word, ch+1, x+1, y) ||
+        findNext(board, word, ch+1, x, y-1) ||
+        findNext(board, word, ch+1, x-1, y)){
+            return true;
         }
-        board[cr][cc] = word.charAt(idx);
+        board[x][y] = temp;
         return false;
     }
 }
