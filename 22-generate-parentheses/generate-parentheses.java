@@ -1,22 +1,23 @@
 class Solution {
     public List<String> generateParenthesis(int n) {
-        List<String> res = new ArrayList<>();
-        generateP(n, res, 0, 0, "");
-        return res;      
-    }   
-    public void generateP(int n, List<String> res, int op, int cp, String ans){
-        if(cp>op){
+        List<String> ans = new ArrayList<>();
+        Solve(n, ans, "", 0, 0, 0);
+        return ans;
+    }
+    public void Solve(int n, List<String> ans, String s, int lb, int rb, int sum){
+        if(sum == -1){
             return;
         }
-        if(op + cp == n*2){
-            res.add(ans);
+        if(lb == n && rb ==n){
+            ans.add(s);
             return;
         }
-        if(op < n){
-            generateP(n, res, op+1, cp, ans+"(");
+        
+        if(lb<=n){
+            Solve(n, ans, s+"(", lb+1, rb, sum+1);
         }
-        if(op>cp){
-            generateP(n, res, op, cp+1, ans+")");
+        if(rb<=n){
+            Solve(n, ans, s+")", lb, rb+1, sum-1);
         }
     }
 }
