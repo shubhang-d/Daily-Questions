@@ -1,44 +1,79 @@
 class Solution {
-    List<List<String>> res = new ArrayList<>();
     public List<List<String>> solveNQueens(int n) {
-        char[][] board = new char[n][n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(board[i], '.');
+        List<List<Boolean>> grid = new ArrayList<>();
+        for(int i = 0;i<n;i++){
+            List<Boolean> temp = new ArrayList<>();
+            for(int j =0 ;j<n;j++){
+                temp.add(false);
+            }
+            grid.add(temp);
         }
-        generate(board, 0);
+        List<List<String>> res = new ArrayList<>();
+        solve(n, grid, res, 0);
         return res;
     }
-    public void generate(char[][] board, int row) {
-        if (row == board.length) {
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < board.length; i++) {
-                list.add(new String(board[i]));
+    public void solve(int n, List<List<Boolean>> grid, List<List<String>> res, int k){
+        if(n == k){
+            List<String> ans = new ArrayList<>();
+            for(int i = 0;i<n;i++){
+                String s = "";
+                for(int j =0;j<n;j++){
+                    if(grid.get(i).get(j)){
+                        s=s+"Q";
+                    }else{
+                        s=s+".";
+                    }
+                }
+                ans.add(s);
             }
-            res.add(list);
+            res.add(ans);
             return;
         }
-        for (int col = 0; col < board[row].length; col++) {
-            if (isSafe(board, row, col)) {
-                board[row][col] = 'Q';
-                generate(board, row + 1);
-                board[row][col] = '.'; 
+
+        for(int i = 0;i<n;i++){
+            if(isSafe(grid, i, k)){
+                grid.get(i).set(k, true);
+                solve(n, grid, res, k+1);
+                grid.get(i).set(k, false);
             }
         }
     }
-    public boolean isSafe(char[][] board, int row, int col) {
-        //top row
-        for (int i = 0; i < row; i++) {
-            if (board[i][col] == 'Q') return false;
+    public boolean isSafe(List<List<Boolean>> grid, int i, int j){
+        //vertical
+        int temp = i;
+        while(temp>=0){
+            if(grid.get(temp).get(j) == true){
+                return false;
+            }
+            temp--;
+        }
+        //horizontal
+        temp = j;
+        while(temp>=0){
+            if(grid.get(i).get(temp) == true){
+                return false;
+            }
+            temp--;
         }
         //left diagonal
-        // This approach is standard, you can remember this
-        int maxLeft=Math.min(row,col);
-        for(int i=1;i<=maxLeft;i++){
-            if(board[row-i][col-i]=='Q') return false;
+        int temp1 = i;
+        int temp2 = j;
+        while(temp1>=0 && temp2>=0 ){
+            if(grid.get(temp1).get(temp2)==true){
+                return false;
+            }
+            temp1--;
+            temp2--;
         }
-        int maxRight=Math.min(row,board.length-1-col);
-        for(int i=1;i<=maxRight;i++){
-            if(board[row-i][col+i]=='Q') return false;
+        //right diagonal
+        temp1 = i;
+        temp2 = j;
+        while(temp2>=0 && temp1<grid.size()){
+            if(grid.get(temp1).get(temp2) == true){
+                return false;
+            }
+            temp1++;
+            temp2--;
         }
         return true;
     }
